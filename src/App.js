@@ -1,24 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import "./App.css";
+import AddMovie from "./components/addMovie/AddMovie";
+import Filter from "./components/filter/Filter";
+import MovieList from "./components/movieList/MovieList";
+import { movies } from "./data";
 
 function App() {
+  // eslint-disable-next-line
+  const [moviesList, setMoviesList] = useState(movies);
+  const [titleSearch, setTitleSearch] = useState("");
+  const [ratingSearche, setRatingSearche] = useState(0);
+
+  const addNewMovie = (newMovie) => {
+    movies.push(newMovie);
+    setMoviesList([...moviesList, newMovie]);
+    console.log(newMovie);
+  };
+
+  const filterMovies = () => {
+    setMoviesList(
+      movies.filter(
+        (movie) =>
+          movie.title.toLowerCase().includes(titleSearch.trim()) &&
+          movie.average >= ratingSearche
+      )
+    );
+  };
+  useEffect(() => {
+    filterMovies();
+    // eslint-disable-next-line
+  }, [titleSearch, ratingSearche]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <AddMovie addNewMovie={addNewMovie} />
+      <Filter
+        setTitleSearch={setTitleSearch}
+        ratingSearche={ratingSearche}
+        setRatingSearche={setRatingSearche}
+      />
+      <MovieList moviesList={moviesList} />
+    </>
   );
 }
 
